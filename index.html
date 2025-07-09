@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsHub - Email Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3);
+        }
+
+        .logo svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        h1 {
+            color: #1A1A1A;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #666666;
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .status-container {
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .status-loading {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border: 2px solid #FFB74D;
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
+            border: 2px solid #4CAF50;
+        }
+
+        .status-error {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            border: 2px solid #F44336;
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-loading .status-icon {
+            background: #FFB74D;
+            animation: pulse 2s infinite;
+        }
+
+        .status-success .status-icon {
+            background: #4CAF50;
+        }
+
+        .status-error .status-icon {
+            background: #F44336;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid white;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .status-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .status-message {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .status-loading .status-message {
+            color: #FF8F00;
+        }
+
+        .status-success .status-message {
+            color: #2E7D32;
+        }
+
+        .status-error .status-message {
+            color: #C62828;
+        }
+
+        .status-description {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .app-button {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+            min-width: 140px;
+            box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+        }
+
+        .app-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(33, 150, 243, 0.4);
+        }
+
+        .app-button:active {
+            transform: translateY(0);
+        }
+
+        .app-button.secondary {
+            background: linear-gradient(135deg, #757575, #616161);
+            box-shadow: 0 4px 16px rgba(117, 117, 117, 0.3);
+        }
+
+        .app-button.secondary:hover {
+            box-shadow: 0 8px 24px rgba(117, 117, 117, 0.4);
+        }
+
+        .footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #E0E0E0;
+            color: #999999;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .token-info {
+            background: #F5F5F5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .app-button {
+                padding: 14px 24px;
+                font-size: 14px;
+                min-width: 120px;
+                display: block;
+                margin: 8px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <h1>SportsHub</h1>
+        <p class="subtitle">Email Verification</p>
+
+        <!-- Status Container -->
+        <div id="statusContainer" class="status-container status-loading">
+            <div class="status-icon">
+                <div class="spinner"></div>
+            </div>
+            <div class="status-message">Verifying your email...</div>
+            <div class="status-description">Please wait while we verify your email address.</div>
+        </div>
+
+        <!-- Token Info (for debugging) -->
+        <div id="tokenInfo" class="token-info" style="display: none;">
+            Token: <span id="tokenValue"></span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div id="actionButtons" style="display: none;">
+            <a href="#" id="openAppBtn" class="app-button">Open SportsHub App</a>
+            <a href="mailto:support@sportshub.com" class="app-button secondary">Contact Support</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>SportsHub Email Verification</strong></p>
+            <p>This page will automatically redirect you to the SportsHub app.</p>
+            <p>If you're having trouble, please contact our support team.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Update status display
+        function updateStatus(type, message, description) {
+            const container = document.getElementById('statusContainer');
+            const messageEl = container.querySelector('.status-message');
+            const descriptionEl = container.querySelector('.status-description');
+            const iconEl = container.querySelector('.status-icon');
+
+            // Remove all status classes
+            container.className = 'status-container';
+            container.classList.add(`status-${type}`);
+
+            // Update content
+            messageEl.textContent = message;
+            descriptionEl.textContent = description;
+
+            // Update icon
+            if (type === 'loading') {
+                iconEl.innerHTML = '<div class="spinner"></div>';
+            } else if (type === 'success') {
+                iconEl.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
+                    </svg>
+                `;
+            } else if (type === 'error') {
+                iconEl.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z"/>
+                    </svg>
+                `;
+            }
+        }
+
+        // Show action buttons
+        function showActionButtons() {
+            document.getElementById('actionButtons').style.display = 'block';
+        }
+
+        // Attempt to open the app
+        function openApp(token) {
+            const deepLink = `sportshub://verify_email?verifyToken=${token}`;
+            const fallbackUrl = `https://play.google.com/store/apps/details?id=com.sportshub.app`; // Update with your app store URL
+            
+            console.log('Attempting to open app with deep link:', deepLink);
+            
+            // Try to open the app
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = deepLink;
+            document.body.appendChild(iframe);
+            
+            // Set up the open app button
+            document.getElementById('openAppBtn').href = deepLink;
+            
+            // For mobile browsers, also try window.location
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    window.location.href = deepLink;
+                }, 500);
+                
+                // Fallback to app store after a delay
+                setTimeout(() => {
+                    if (confirm('App not installed? Would you like to download SportsHub from the app store?')) {
+                        window.location.href = fallbackUrl;
+                    }
+                }, 3000);
+            }
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1000);
+        }
+
+        // Main verification logic
+        function handleVerification() {
+            // Get verification token from URL
+            const verifyToken = getUrlParameter('verifyToken');
+            const resetToken = getUrlParameter('token'); // For password reset compatibility
+            
+            console.log('URL Parameters:', {
+                verifyToken: verifyToken,
+                resetToken: resetToken,
+                fullUrl: window.location.href
+            });
+
+            // Show token for debugging (remove in production)
+            if (verifyToken || resetToken) {
+                const tokenEl = document.getElementById('tokenValue');
+                const tokenInfoEl = document.getElementById('tokenInfo');
+                tokenEl.textContent = verifyToken || resetToken;
+                // tokenInfoEl.style.display = 'block'; // Uncomment for debugging
+            }
+
+            if (verifyToken) {
+                // Email verification
+                setTimeout(() => {
+                    updateStatus('success', 'Email Verified!', 'Your email has been verified successfully. Opening SportsHub app...');
+                    showActionButtons();
+                    openApp(verifyToken);
+                }, 1500);
+                
+            } else if (resetToken) {
+                // Password reset (existing functionality)
+                setTimeout(() => {
+                    updateStatus('success', 'Redirecting...', 'Opening SportsHub app for password reset...');
+                    showActionButtons();
+                    
+                    const resetDeepLink = `sportshub://reset_password/${resetToken}`;
+                    document.getElementById('openAppBtn').href = resetDeepLink;
+                    
+                    // Try to open app
+                    setTimeout(() => {
+                        window.location.href = resetDeepLink;
+                    }, 500);
+                }, 1500);
+                
+            } else {
+                // No token found
+                setTimeout(() => {
+                    updateStatus('error', 'Invalid Link', 'This verification link is invalid or has expired. Please request a new verification email.');
+                    showActionButtons();
+                    document.getElementById('openAppBtn').textContent = 'Open SportsHub App';
+                    document.getElementById('openAppBtn').href = 'sportshub://app';
+                }, 1500);
+            }
+        }
+
+        // Start verification when page loads
+        document.addEventListener('DOMContentLoaded', handleVerification);
+
+        // Handle browser back button
+        window.addEventListener('popstate', function(event) {
+            handleVerification();
+        });
+
+        // Log page visits for debugging
+        console.log('SportsHub Verification Page Loaded');
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Current URL:', window.location.href);
+    </script>
+</body>
+</html>
